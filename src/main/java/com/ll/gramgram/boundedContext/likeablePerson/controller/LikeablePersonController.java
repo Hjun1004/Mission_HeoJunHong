@@ -4,6 +4,7 @@ import com.ll.gramgram.base.rq.Rq;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
+import com.ll.gramgram.boundedContext.likeablePerson.repository.LikeablePersonRepository;
 import com.ll.gramgram.boundedContext.likeablePerson.service.LikeablePersonService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,8 @@ import java.util.List;
 public class LikeablePersonController {
     private final Rq rq;
     private final LikeablePersonService likeablePersonService;
+
+    private final LikeablePersonRepository likeablePersonRepository;
 
     @GetMapping("/add")
     public String showAdd() {
@@ -50,9 +53,15 @@ public class LikeablePersonController {
 
     @GetMapping("delete/{id}")
     public String delete(@PathVariable("id") Long id){
+        LikeablePerson likeablePeople = likeablePersonService.findById(id);
 
+        RsData<LikeablePerson> likeableRsData = likeablePersonService.delete(rq.getMember().getInstaMember(), likeablePeople);
 
-        return rq.redirectWithMsg("/likeablePerson/list", "삭제 되었습니다.");
+        if(likeableRsData.isFail()) return rq.historyBack(likeableRsData);
+
+        //likeableRsData = likeablePersonService.delete(rq.getMember().getInstaMember(), likeablePeople);
+
+        return rq.redirectWithMsg("/likeablePerson/list", likeableRsData.getMsg());
     }
 
     @GetMapping("/list")

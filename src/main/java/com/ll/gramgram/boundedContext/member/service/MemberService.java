@@ -39,6 +39,8 @@ public class MemberService {
 
         // 소셜 로그인을 통한 회원가입에서는 비번이 없다.
         if (StringUtils.hasText(password)) password = passwordEncoder.encode(password);
+        // 패스워드가 존재하면 (null도 아니고 길이도 있다.) 그럴 때 패스워드를 암호화한다.
+        // 길이가 0일 때는 암호화 없이 들어간다.
 
         Member member = Member
                 .builder()
