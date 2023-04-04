@@ -59,8 +59,6 @@ public class LikeablePersonController {
 
         if(likeableRsData.isFail()) return rq.historyBack(likeableRsData);
 
-        //likeableRsData = likeablePersonService.delete(rq.getMember().getInstaMember(), likeablePeople);
-
         return rq.redirectWithMsg("/likeablePerson/list", likeableRsData.getMsg());
     }
 

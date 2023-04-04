@@ -60,12 +60,6 @@ public class LikeablePersonService {
         return likeablePerson;
     }
 
-    /*@Transactional
-    public void deleteLikeable(InstaMember instaMember, LikeablePerson likeablePeople) {
-        if(instaMember.getId() == likeablePeople.getFromInstaMember().getId()){
-            likeablePersonRepository.delete(likeablePeople);
-        }
-    }*/
 
     @Transactional
     public RsData<LikeablePerson> delete(InstaMember instaMember, LikeablePerson likeablePeople) {
