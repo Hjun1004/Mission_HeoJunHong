@@ -62,7 +62,7 @@ public class LikeablePersonService {
 
     @Transactional
     public RsData<LikeablePerson> delete(InstaMember instaMember, LikeablePerson likeablePeople) {
-        if(instaMember.getId() != likeablePeople.getFromInstaMember().getId()){
+        if( instaMember == null || instaMember.getId() != likeablePeople.getFromInstaMember().getId() ){
             return RsData.of("F-2", "삭제 권한이 없습니다.");
         }
 
