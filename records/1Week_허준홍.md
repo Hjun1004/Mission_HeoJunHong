@@ -52,3 +52,7 @@
 - 구글 로그인을 위한 기능을 구현하면서 yml에 왜 client-id, client-secret, scope만 추가하는지 궁금했는데, 구글의 경우 Spring Security OAuth2가 provider에 대한 정보를 가지고 있기에 작성할 필요가 없다고 한다.
 - 아쉬웠던 점은 CustomOAuth2UserService.java파일의 아직 명확히 되지 않았다.
 - 호감 삭제기능에서 Transactional을 붙이는것에 시간을 많이 소요했다.
+
+**[리팩토링]**
+- LikeablePersonRepository 에 KEY 값의 자료형이 Integer로 되어있어서 findById를 Long자료형인 id로 찾을 수 있도록 새로 작성했었는데 그냥 KEY자료형을 Long으로 바꾸면 직접 작성할 필요가 없었다.
+- findById에서 id를 기준으로 찾은 LikeablePerson의 객체가 null일 경우에 대한 처리가 부족했다. 그래서 DataNotFoundException 에러를 띄우도록 변경했다.
