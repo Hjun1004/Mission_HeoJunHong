@@ -1,5 +1,6 @@
 package com.ll.gramgram.boundedContext.likeablePerson.service;
 
+import com.ll.gramgram.base.exception.DataNotFoundException;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.instaMember.service.InstaMemberService;
@@ -53,11 +54,9 @@ public class LikeablePersonService {
 
     public LikeablePerson findById(Long id){
         Optional<LikeablePerson> opLikePeople = likeablePersonRepository.findById(id);
-        LikeablePerson likeablePerson = new LikeablePerson();
         if(opLikePeople.isPresent()){
-            likeablePerson = opLikePeople.get();
-        }
-        return likeablePerson;
+            return opLikePeople.get();
+        }else throw new DataNotFoundException("좋아요를 삭제하려는 대상을 찾지 못했습니다.");
     }
 
 
