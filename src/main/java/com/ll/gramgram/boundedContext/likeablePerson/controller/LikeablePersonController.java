@@ -26,8 +26,6 @@ public class LikeablePersonController {
     private final Rq rq;
     private final LikeablePersonService likeablePersonService;
 
-    private final LikeablePersonRepository likeablePersonRepository;
-
     @GetMapping("/add")
     public String showAdd() {
         return "usr/likeablePerson/add";
