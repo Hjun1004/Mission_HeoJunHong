@@ -59,14 +59,21 @@ public class LikeablePersonService {
         }else throw new DataNotFoundException("좋아요를 삭제하려는 대상을 찾지 못했습니다.");
     }
 
-
     @Transactional
-    public RsData<LikeablePerson> delete(InstaMember instaMember, LikeablePerson likeablePeople) {
-        if( instaMember == null || instaMember.getId() != likeablePeople.getFromInstaMember().getId() ){
-            return RsData.of("F-2", "삭제 권한이 없습니다.");
+    public RsData<LikeablePerson> canActorDelete(InstaMember instaActor, LikeablePerson likeablePeople) {
+        if(likeablePeople == null){
+            return RsData.of("F-1", "이미 삭제되었습니다.");
         }
 
+        if(!instaActor.getId().equals(likeablePeople.getFromInstaMember().getId())){
+            return RsData.of("F-2", "삭제 권한이 없습니다.");
+        }
+        return RsData.of("S-2", "삭제 가능합니다.", likeablePeople);
+    }
+
+    @Transactional
+    public RsData<LikeablePerson> delete(LikeablePerson likeablePeople) {
         likeablePersonRepository.delete(likeablePeople);
-        return RsData.of("S-2", "삭제 되었습니다.", likeablePeople);
+        return RsData.of("S-1","%s에 대한 호감이 삭제 되었습니다.".formatted(likeablePeople.getToInstaMember().getUsername()));
     }
 }
