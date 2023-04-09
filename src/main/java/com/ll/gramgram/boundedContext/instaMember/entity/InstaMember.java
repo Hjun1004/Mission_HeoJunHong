@@ -39,5 +39,20 @@ public class InstaMember {
     @OrderBy("id DESC")
     @LazyCollection(LazyCollectionOption.EXTRA)
     @Builder.Default //@Builder 가 있으면 ' = new ArrayList<>;'가 작동하지 않는다. 그렇기에 이걸 붙임
-    private List<LikeablePerson> formLikealbePeople = new ArrayList<>();
+    private List<LikeablePerson> fromLikealbePeople = new ArrayList<>();
+
+    @OneToMany(mappedBy = "toInstaMember", cascade = {CascadeType.ALL})
+    @OrderBy("id DESC")
+    @LazyCollection(LazyCollectionOption.EXTRA)
+    @Builder.Default //@Builder 가 있으면 ' = new ArrayList<>;'가 작동하지 않는다. 그렇기에 이걸 붙임
+    private List<LikeablePerson> toLikealbePeople = new ArrayList<>();
+
+
+    public void addFromLikeablePerson(LikeablePerson likeablePerson) {
+        fromLikealbePeople.add(0, likeablePerson);// 최신것이 앞으로 들어가야한다.
+    }
+
+    public void addToLikeablePerson(LikeablePerson likeablePerson) {
+        toLikealbePeople.add(0, likeablePerson);
+    }
 }
