@@ -53,10 +53,7 @@ public class LikeablePersonService {
 
 
     public LikeablePerson findById(Long id){
-        Optional<LikeablePerson> opLikePeople = likeablePersonRepository.findById(id);
-        if(opLikePeople.isPresent()){
-            return opLikePeople.get();
-        }else throw new DataNotFoundException("좋아요를 삭제하려는 대상을 찾지 못했습니다.");
+        return likeablePersonRepository.findById(id).orElse(null);
     }
 
     @Transactional
