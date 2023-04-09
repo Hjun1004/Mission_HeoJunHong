@@ -21,7 +21,12 @@
                 <span class="toInstaMember_username" th:text="${likeablePerson.toInstaMember.username}"></span>
                 <span class="toInstaMember_attractiveTypeDisplayName"
                       th:text="${likeablePerson.attractiveTypeDisplayName}"></span>
-                <a th:href="@{|delete/${likeablePerson.id}|}" onclick="return confirm('정말로 삭제하시겠습니까?');">삭제</a>
+                <a href="javascript:;" onclick="if(confirm('정말로 삭제하시겠습니까?') ) $(this).next().submit();">삭제</a>
+                <form hidden th:action="@{|/likeablePerson/${likeablePerson.id}|}" method="POST">
+                    <input type="hidden" name="_method" value="delete">
+                </form>
+                <!-- GET 을 POST로 바꾸어 전송하기 위함 삭제를 누르면 form이 실행된다.
+                     조회를 제외하고서는 다 POST방식으로 전송하는것이 좋다.-->
             </li>
         </ul>
     </th:block>

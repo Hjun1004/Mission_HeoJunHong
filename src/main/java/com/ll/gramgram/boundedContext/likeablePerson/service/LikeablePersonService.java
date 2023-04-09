@@ -31,18 +31,24 @@ public class LikeablePersonService {
             return RsData.of("F-1", "본인을 호감상대로 등록할 수 없습니다.");
         }
 
+        InstaMember fromInstaMember = member.getInstaMember();
         InstaMember toInstaMember = instaMemberService.findByUsernameOrCreate(username).getData();
 
         LikeablePerson likeablePerson = LikeablePerson
                 .builder()
-                .fromInstaMember(member.getInstaMember()) // 호감을 표시하는 사람의 인스타 멤버
-                .fromInstaMemberUsername(member.getInstaMember().getUsername()) // 중요하지 않음
+                .fromInstaMember(fromInstaMember) // 호감을 표시하는 사람의 인스타 멤버
+                .fromInstaMemberUsername(fromInstaMember.getUsername()) // 중요하지 않음
                 .toInstaMember(toInstaMember) // 호감을 받는 사람의 인스타 멤버
                 .toInstaMemberUsername(toInstaMember.getUsername()) // 중요하지 않음
                 .attractiveTypeCode(attractiveTypeCode) // 1=외모, 2=능력, 3=성격
                 .build();
 
         likeablePersonRepository.save(likeablePerson); // 저장
+        // 니가 좋아하는 호감표시 하나 생겼다.
+        fromInstaMember.addFromLikeablePerson(likeablePerson);
+
+        // 너를 좋아하는 호감표시 생겼어.
+        toInstaMember.addToLikeablePerson(likeablePerson);
 
         return RsData.of("S-1", "입력하신 인스타유저(%s)를 호감상대로 등록되었습니다.".formatted(username), likeablePerson);
     }
@@ -53,20 +59,24 @@ public class LikeablePersonService {
 
 
     public LikeablePerson findById(Long id){
-        Optional<LikeablePerson> opLikePeople = likeablePersonRepository.findById(id);
-        if(opLikePeople.isPresent()){
-            return opLikePeople.get();
-        }else throw new DataNotFoundException("좋아요를 삭제하려는 대상을 찾지 못했습니다.");
+        return likeablePersonRepository.findById(id).orElse(null);
     }
 
-
     @Transactional
-    public RsData<LikeablePerson> delete(InstaMember instaMember, LikeablePerson likeablePeople) {
-        if( instaMember == null || instaMember.getId() != likeablePeople.getFromInstaMember().getId() ){
-            return RsData.of("F-2", "삭제 권한이 없습니다.");
+    public RsData<LikeablePerson> canActorDelete(InstaMember instaActor, LikeablePerson likeablePeople) {
+        if(likeablePeople == null){
+            return RsData.of("F-1", "이미 삭제되었습니다.");
         }
 
+        if(!instaActor.getId().equals(likeablePeople.getFromInstaMember().getId())){
+            return RsData.of("F-2", "삭제 권한이 없습니다.");
+        }
+        return RsData.of("S-2", "삭제 가능합니다.", likeablePeople);
+    }
+
+    @Transactional
+    public RsData<LikeablePerson> delete(LikeablePerson likeablePeople) {
         likeablePersonRepository.delete(likeablePeople);
-        return RsData.of("S-2", "삭제 되었습니다.", likeablePeople);
+        return RsData.of("S-1","%s에 대한 호감이 삭제 되었습니다.".formatted(likeablePeople.getToInstaMember().getUsername()));
     }
 }
