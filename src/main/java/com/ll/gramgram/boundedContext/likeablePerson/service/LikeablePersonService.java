@@ -58,8 +58,8 @@ public class LikeablePersonService {
     }
 
 
-    public LikeablePerson findById(Long id){
-        return likeablePersonRepository.findById(id).orElse(null);
+    public Optional<LikeablePerson> findById(Long id){
+        return likeablePersonRepository.findById(id);
     }
 
     @Transactional
@@ -74,9 +74,11 @@ public class LikeablePersonService {
         return RsData.of("S-2", "삭제 가능합니다.", likeablePeople);
     }
 
+
     @Transactional
     public RsData<LikeablePerson> delete(LikeablePerson likeablePeople) {
+        String toInstaMemberUsername = likeablePeople.getToInstaMember().getUsername();
         likeablePersonRepository.delete(likeablePeople);
-        return RsData.of("S-1","%s에 대한 호감이 삭제 되었습니다.".formatted(likeablePeople.getToInstaMember().getUsername()));
+        return RsData.of("S-1","%s에 대한 호감이 삭제 되었습니다.".formatted(toInstaMemberUsername));
     }
 }
