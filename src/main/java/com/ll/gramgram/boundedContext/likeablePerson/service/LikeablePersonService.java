@@ -42,6 +42,10 @@ public class LikeablePersonService {
         }
 
         InstaMember fromInstaMember = member.getInstaMember();
+        // 호감 표시 대상 10명 체크
+        List<LikeablePerson> fromLikeableList = fromInstaMember.getFromLikealbePeople();
+        if(fromLikeableList.size()>=10) return RsData.of("F-3", "호감표시는 10명을 넘을 수 없습니다.");
+
         InstaMember toInstaMember = instaMemberService.findByUsernameOrCreate(username).getData();
 
         LikeablePerson likeablePerson = LikeablePerson
