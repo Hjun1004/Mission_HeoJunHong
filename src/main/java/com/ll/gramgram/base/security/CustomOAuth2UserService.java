@@ -1,5 +1,7 @@
 package com.ll.gramgram.base.security;
 
+import com.ll.gramgram.base.userInfo.NaverUserInfo;
+import com.ll.gramgram.base.userInfo.OAuth2UserInfo;
 import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +35,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         String providerTypeCode = userRequest.getClientRegistration().getRegistrationId().toUpperCase();
 
-        String username = providerTypeCode + "__%s".formatted(oauthId);
+        String username = null;
+
+        if(providerTypeCode.equals("NAVER")){
+            // 네이버 로그인 info 생성
+            OAuth2UserInfo oAuth2UserInfo = new NaverUserInfo(oAuth2User.getAttributes());
+            // 네이버 로그인 정보 중 id값만을 이용해서 로그인 정보 표시
+            username = providerTypeCode + "__%s".formatted(oAuth2UserInfo.getProviderId());
+        }
+        else{
+            username = providerTypeCode + "__%s".formatted(oauthId);
+        }
+
 
         Member member = memberService.whenSocialLogin(providerTypeCode, username).getData();
 
