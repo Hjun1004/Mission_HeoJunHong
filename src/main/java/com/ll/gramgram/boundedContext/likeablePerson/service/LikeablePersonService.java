@@ -30,6 +30,10 @@ public class LikeablePersonService {
         LikeablePerson existLikeablePeople = exist(member.getInstaMember(), username);
 
         if(existLikeablePeople != null){
+            if(existLikeablePeople.getAttractiveTypeCode() != attractiveTypeCode){
+                return modify(existLikeablePeople,attractiveTypeCode);
+            }
+
             return RsData.of("F-3", "중복으로 호감표시를 할 수 없습니다.");
         }
 
