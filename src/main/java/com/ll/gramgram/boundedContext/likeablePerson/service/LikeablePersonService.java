@@ -27,6 +27,12 @@ public class LikeablePersonService {
             return RsData.of("F-2", "먼저 본인의 인스타그램 아이디를 입력해야 합니다.");
         }
 
+        LikeablePerson existLikeablePeople = exist(member.getInstaMember(), username);
+
+        if(existLikeablePeople != null){
+            return RsData.of("F-3", "중복으로 호감표시를 할 수 없습니다.");
+        }
+
         if (member.getInstaMember().getUsername().equals(username)) {
             return RsData.of("F-1", "본인을 호감상대로 등록할 수 없습니다.");
         }
@@ -43,6 +49,7 @@ public class LikeablePersonService {
                 .attractiveTypeCode(attractiveTypeCode) // 1=외모, 2=능력, 3=성격
                 .build();
 
+
         likeablePersonRepository.save(likeablePerson); // 저장
         // 니가 좋아하는 호감표시 하나 생겼다.
         fromInstaMember.addFromLikeablePerson(likeablePerson);
@@ -53,8 +60,35 @@ public class LikeablePersonService {
         return RsData.of("S-1", "입력하신 인스타유저(%s)를 호감상대로 등록되었습니다.".formatted(username), likeablePerson);
     }
 
+    public LikeablePerson exist(InstaMember instaMember, String username) {
+        List<LikeablePerson> fromLikeableList = instaMember.getFromLikealbePeople();
+
+        Optional<InstaMember> toInstamember = instaMemberService.findByUsername(username);
+
+        if(toInstamember.isPresent()){
+            for(LikeablePerson li : fromLikeableList){
+                if(li.getFromInstaMember().getId().equals(instaMember.getId()) && li.getToInstaMember().getId().equals(toInstamember.get().getId())){
+
+                    return li;
+                }
+            }
+        }
+        return null;
+    }
+
     public List<LikeablePerson> findByFromInstaMemberId(Long fromInstaMemberId) {
         return likeablePersonRepository.findByFromInstaMemberId(fromInstaMemberId);
+    }
+
+    public RsData<LikeablePerson> modify(LikeablePerson modifyLikeablePeople, int attractiveTypeCode){
+        // 수정 전의 호감 사유
+        String beforeAttractive = modifyLikeablePeople.getAttractiveTypeDisplayName();
+
+        // 호감 사유 수정
+        modifyLikeablePeople.setAttractiveTypeCode(attractiveTypeCode);
+
+        return RsData.of("S-2","%s에 대한 호감사유를 %s에서 %s으로 변경합니다.".formatted(modifyLikeablePeople.getToInstaMember().getUsername()
+                ,beforeAttractive,modifyLikeablePeople.getAttractiveTypeDisplayName()),modifyLikeablePeople);
     }
 
 
