@@ -28,6 +28,7 @@ public class LikeablePersonService {
             return RsData.of("F-2", "먼저 본인의 인스타그램 아이디를 입력해야 합니다.");
         }
 
+        // 등록하려는 대상이 이미 호감 목록에 존재하는지 확인
         LikeablePerson existLikeablePeople = exist(member.getInstaMember(), username);
 
         if(existLikeablePeople != null){
