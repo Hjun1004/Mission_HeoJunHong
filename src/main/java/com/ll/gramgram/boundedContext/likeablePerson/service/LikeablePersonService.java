@@ -71,17 +71,11 @@ public class LikeablePersonService {
     }
 
     public LikeablePerson exist(InstaMember instaMember, String username) {
-        List<LikeablePerson> fromLikeableList = instaMember.getFromLikealbePeople();
 
-        Optional<InstaMember> toInstamember = instaMemberService.findByUsername(username);
+        LikeablePerson existLikeablePerson = likeablePersonRepository.findByFromInstaMemberIdAndToInstaMember_username(instaMember.getId(),username);
 
-        if(toInstamember.isPresent()){
-            for(LikeablePerson li : fromLikeableList){
-                if(li.getFromInstaMember().getId().equals(instaMember.getId()) && li.getToInstaMember().getId().equals(toInstamember.get().getId())){
-
-                    return li;
-                }
-            }
+        if(existLikeablePerson !=  null){
+            return existLikeablePerson;
         }
         return null;
     }
