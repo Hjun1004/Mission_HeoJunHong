@@ -1,5 +1,6 @@
 package com.ll.gramgram.boundedContext.likeablePerson.service;
 
+import com.ll.gramgram.base.appConfig.AppConfig;
 import com.ll.gramgram.base.exception.DataNotFoundException;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
@@ -33,7 +34,6 @@ public class LikeablePersonService {
             if(existLikeablePeople.getAttractiveTypeCode() != attractiveTypeCode){
                 return modify(existLikeablePeople,attractiveTypeCode);
             }
-
             return RsData.of("F-3", "중복으로 호감표시를 할 수 없습니다.");
         }
 
@@ -42,9 +42,12 @@ public class LikeablePersonService {
         }
 
         InstaMember fromInstaMember = member.getInstaMember();
+
+        int like_List_Max = (int)AppConfig.getLikeablePersonFromMax();
         // 호감 표시 대상 10명 체크
         List<LikeablePerson> fromLikeableList = fromInstaMember.getFromLikealbePeople();
-        if(fromLikeableList.size()>=10) return RsData.of("F-3", "호감표시는 10명을 넘을 수 없습니다.");
+        if(fromLikeableList.size() >= like_List_Max)
+            return RsData.of("F-3", "호감표시는 %d명을 넘을 수 없습니다.".formatted(like_List_Max));
 
         InstaMember toInstaMember = instaMemberService.findByUsernameOrCreate(username).getData();
 
@@ -56,7 +59,6 @@ public class LikeablePersonService {
                 .toInstaMemberUsername(toInstaMember.getUsername()) // 중요하지 않음
                 .attractiveTypeCode(attractiveTypeCode) // 1=외모, 2=능력, 3=성격
                 .build();
-
 
         likeablePersonRepository.save(likeablePerson); // 저장
         // 니가 좋아하는 호감표시 하나 생겼다.
