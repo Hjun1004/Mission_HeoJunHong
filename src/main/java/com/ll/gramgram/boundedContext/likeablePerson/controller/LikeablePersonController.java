@@ -46,13 +46,21 @@ public class LikeablePersonController {
             return rq.historyBack(canLikeRsData);
         }
 
-        RsData<LikeablePerson> createRsData = likeablePersonService.like(rq.getMember(), addForm.getUsername(), addForm.getAttractiveTypeCode());
+        RsData rsData;
 
-        if (createRsData.isFail()) {
-            return rq.historyBack(createRsData);
+        if(canLikeRsData.getResultCode().equals("S-2")){
+            // 이미 등록된 호감대상의 호감 사유만 바꾸는 경우
+            rsData = likeablePersonService.modifyAttractive(canLikeRsData.getData(), addForm.attractiveTypeCode);
+        }else{
+            // 호감표시에 문제가 없고 호감 대상 추가하는 경우
+            rsData = likeablePersonService.like(rq.getMember(), addForm.getUsername(), addForm.getAttractiveTypeCode());
         }
 
-        return rq.redirectWithMsg("/likeablePerson/list", createRsData);
+        if (rsData.isFail()) {
+            return rq.historyBack(rsData);
+        }
+
+        return rq.redirectWithMsg("/likeablePerson/list", rsData);
     }
 
     @PreAuthorize("isAuthenticated()")

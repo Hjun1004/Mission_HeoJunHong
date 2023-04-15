@@ -64,6 +64,7 @@ public class LikeablePersonService {
         return likeablePersonRepository.findByFromInstaMemberId(fromInstaMemberId);
     }
 
+    @Transactional
     public RsData<LikeablePerson> modifyAttractive(LikeablePerson modifyLikeablePeople, int attractiveTypeCode){
         // 수정 전의 호감 사유
         String beforeAttractive = modifyLikeablePeople.getAttractiveTypeDisplayName();
@@ -95,15 +96,13 @@ public class LikeablePersonService {
 
     @Transactional
     public RsData<LikeablePerson> delete(LikeablePerson likeablePeople) {
-
-
-
         String toInstaMemberUsername = likeablePeople.getToInstaMember().getUsername();
         likeablePersonRepository.delete(likeablePeople);
         return RsData.of("S-1","%s에 대한 호감이 삭제 되었습니다.".formatted(toInstaMemberUsername));
     }
 
 
+    @Transactional
     public RsData<LikeablePerson> canLike(Member actor, String username, int attractiveTypeCode) {
         int like_List_Max = (int)AppConfig.getLikeablePersonFromMax();
 
@@ -116,12 +115,13 @@ public class LikeablePersonService {
 
         if(existLikeablePeople != null){
             if(existLikeablePeople.getAttractiveTypeCode() != attractiveTypeCode){
-                return modifyAttractive(existLikeablePeople,attractiveTypeCode);
+                //return modifyAttractive(existLikeablePeople,attractiveTypeCode);
+                return RsData.of("S-2","수정 가능합니다.",existLikeablePeople);
             }
             return RsData.of("F-3", "중복으로 호감표시를 할 수 없습니다.");
         }
-        else if(existLikeablePeople == null)
-            return RsData.of("S-2", "%s에 대해 호감표시가 가능합니다.".formatted(username));
+//        else if(existLikeablePeople == null)
+//            return RsData.of("S-2", "%s에 대해 호감표시가 가능합니다.".formatted(username));
 
         if (actor.getInstaMember().getUsername().equals(username)) {
             return RsData.of("F-1", "본인을 호감상대로 등록할 수 없습니다.");
