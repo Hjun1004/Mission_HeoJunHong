@@ -64,7 +64,7 @@ public class LikeablePersonService {
         return likeablePersonRepository.findByFromInstaMemberId(fromInstaMemberId);
     }
 
-    public RsData<LikeablePerson> modify(LikeablePerson modifyLikeablePeople, int attractiveTypeCode){
+    public RsData<LikeablePerson> modifyAttractive(LikeablePerson modifyLikeablePeople, int attractiveTypeCode){
         // 수정 전의 호감 사유
         String beforeAttractive = modifyLikeablePeople.getAttractiveTypeDisplayName();
 
@@ -116,7 +116,7 @@ public class LikeablePersonService {
 
         if(existLikeablePeople != null){
             if(existLikeablePeople.getAttractiveTypeCode() != attractiveTypeCode){
-                return modify(existLikeablePeople,attractiveTypeCode);
+                return modifyAttractive(existLikeablePeople,attractiveTypeCode);
             }
             return RsData.of("F-3", "중복으로 호감표시를 할 수 없습니다.");
         }
