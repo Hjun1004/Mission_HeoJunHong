@@ -1,8 +1,10 @@
 package com.ll.gramgram.boundedContext.likeablePerson.entity;
 
+import com.ll.gramgram.base.BaseEntity;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -11,23 +13,13 @@ import java.time.LocalDateTime;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
-@ToString
 @Entity
 @Getter
+@NoArgsConstructor
+@ToString(callSuper = true) // 디버그를 위한
+@SuperBuilder
 @Setter
-public class LikeablePerson {
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
-    @CreatedDate
-    private LocalDateTime createDate;
-    @LastModifiedDate
-    private LocalDateTime modifyDate;
-
+public class LikeablePerson extends BaseEntity {
     @ManyToOne
     @ToString.Exclude //양방향 관계에 대해서 출력에 문제가 발생할 수 있기 때문에 작성해주었다.
     private InstaMember fromInstaMember; // 호감을 표시한 사람(인스타 멤버)
