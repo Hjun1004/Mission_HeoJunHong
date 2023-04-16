@@ -19,6 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class LikeablePersonService {
+
     private final LikeablePersonRepository likeablePersonRepository;
     private final InstaMemberService instaMemberService;
 
@@ -27,6 +28,13 @@ public class LikeablePersonService {
         if (!member.hasConnectedInstaMember()) {
             return RsData.of("F-1", "먼저 본인의 인스타그램 아이디를 입력해주세요.");
         }
+
+        RsData<LikeablePerson> canLikeRsdata = canLike(member, username, attractiveTypeCode);
+
+        if(canLikeRsdata.isFail()) return canLikeRsdata;
+
+        if(canLikeRsdata.getResultCode().equals("S-2")) return modifyAttractive(canLikeRsdata.getData(),attractiveTypeCode);
+
 
         InstaMember fromInstaMember = member.getInstaMember();
         InstaMember toInstaMember = instaMemberService.findByUsernameOrCreate(username).getData();

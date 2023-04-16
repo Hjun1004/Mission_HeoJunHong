@@ -39,28 +39,13 @@ public class LikeablePersonController {
 
     @PostMapping("/add")
     public String add(@Valid AddForm addForm) {
+        RsData<LikeablePerson> addRsData = likeablePersonService.like(rq.getMember(), addForm.getUsername(), addForm.getAttractiveTypeCode());
 
-        RsData<LikeablePerson> canLikeRsData = likeablePersonService.canLike(rq.getMember(), addForm.getUsername(), addForm.getAttractiveTypeCode());
-
-        if (canLikeRsData.isFail()) {
-            return rq.historyBack(canLikeRsData);
+        if (addRsData.isFail()) {
+            return rq.historyBack(addRsData);
         }
 
-        RsData rsData;
-
-        if(canLikeRsData.getResultCode().equals("S-2")){
-            // 이미 등록된 호감대상의 호감 사유만 바꾸는 경우
-            rsData = likeablePersonService.modifyAttractive(canLikeRsData.getData(), addForm.attractiveTypeCode);
-        }else{
-            // 호감표시에 문제가 없고 호감 대상 추가하는 경우
-            rsData = likeablePersonService.like(rq.getMember(), addForm.getUsername(), addForm.getAttractiveTypeCode());
-        }
-
-        if (rsData.isFail()) {
-            return rq.historyBack(rsData);
-        }
-
-        return rq.redirectWithMsg("/likeablePerson/list", rsData);
+        return rq.redirectWithMsg("/likeablePerson/list", addRsData);
     }
 
     @PreAuthorize("isAuthenticated()")
