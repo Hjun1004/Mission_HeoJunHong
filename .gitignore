@@ -37,3 +37,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Custom ###
+src/main/generated

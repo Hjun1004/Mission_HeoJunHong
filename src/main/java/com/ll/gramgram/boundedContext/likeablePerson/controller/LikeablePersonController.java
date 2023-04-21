@@ -39,13 +39,13 @@ public class LikeablePersonController {
 
     @PostMapping("/add")
     public String add(@Valid AddForm addForm) {
-        RsData<LikeablePerson> createRsData = likeablePersonService.like(rq.getMember(), addForm.getUsername(), addForm.getAttractiveTypeCode());
+        RsData<LikeablePerson> addRsData = likeablePersonService.like(rq.getMember(), addForm.getUsername(), addForm.getAttractiveTypeCode());
 
-        if (createRsData.isFail()) {
-            return rq.historyBack(createRsData);
+        if (addRsData.isFail()) {
+            return rq.historyBack(addRsData);
         }
 
-        return rq.redirectWithMsg("/likeablePerson/list", createRsData);
+        return rq.redirectWithMsg("/likeablePerson/list", addRsData);
     }
 
     @PreAuthorize("isAuthenticated()")

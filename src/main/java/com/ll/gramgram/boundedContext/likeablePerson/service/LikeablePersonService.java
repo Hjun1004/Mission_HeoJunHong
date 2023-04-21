@@ -1,5 +1,6 @@
 package com.ll.gramgram.boundedContext.likeablePerson.service;
 
+import com.ll.gramgram.base.appConfig.AppConfig;
 import com.ll.gramgram.base.exception.DataNotFoundException;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
@@ -18,18 +19,22 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class LikeablePersonService {
+
     private final LikeablePersonRepository likeablePersonRepository;
     private final InstaMemberService instaMemberService;
 
     @Transactional
     public RsData<LikeablePerson> like(Member member, String username, int attractiveTypeCode) {
-        if ( member.hasConnectedInstaMember() == false ) {
-            return RsData.of("F-2", "먼저 본인의 인스타그램 아이디를 입력해야 합니다.");
+        if (!member.hasConnectedInstaMember()) {
+            return RsData.of("F-1", "먼저 본인의 인스타그램 아이디를 입력해주세요.");
         }
 
-        if (member.getInstaMember().getUsername().equals(username)) {
-            return RsData.of("F-1", "본인을 호감상대로 등록할 수 없습니다.");
-        }
+        RsData<LikeablePerson> canLikeRsdata = canLike(member, username, attractiveTypeCode);
+
+        if(canLikeRsdata.isFail()) return canLikeRsdata;
+
+        if(canLikeRsdata.getResultCode().equals("S-2")) return modifyAttractive(canLikeRsdata.getData(),attractiveTypeCode);
+
 
         InstaMember fromInstaMember = member.getInstaMember();
         InstaMember toInstaMember = instaMemberService.findByUsernameOrCreate(username).getData();
@@ -53,8 +58,30 @@ public class LikeablePersonService {
         return RsData.of("S-1", "입력하신 인스타유저(%s)를 호감상대로 등록되었습니다.".formatted(username), likeablePerson);
     }
 
+    public LikeablePerson exist(InstaMember instaMember, String username) {
+
+        LikeablePerson existLikeablePerson = likeablePersonRepository.findByFromInstaMemberIdAndToInstaMember_username(instaMember.getId(),username);
+
+        if(existLikeablePerson !=  null){
+            return existLikeablePerson;
+        }
+        return null;
+    }
+
     public List<LikeablePerson> findByFromInstaMemberId(Long fromInstaMemberId) {
         return likeablePersonRepository.findByFromInstaMemberId(fromInstaMemberId);
+    }
+
+    @Transactional
+    public RsData<LikeablePerson> modifyAttractive(LikeablePerson modifyLikeablePeople, int attractiveTypeCode){
+        // 수정 전의 호감 사유
+        String beforeAttractive = modifyLikeablePeople.getAttractiveTypeDisplayName();
+
+        // 호감 사유 수정
+        modifyLikeablePeople.setAttractiveTypeCode(attractiveTypeCode);
+
+        return RsData.of("S-2","%s에 대한 호감사유를 %s에서 %s으로 변경합니다.".formatted(modifyLikeablePeople.getToInstaMember().getUsername()
+                ,beforeAttractive,modifyLikeablePeople.getAttractiveTypeDisplayName()),modifyLikeablePeople);
     }
 
 
@@ -80,5 +107,39 @@ public class LikeablePersonService {
         String toInstaMemberUsername = likeablePeople.getToInstaMember().getUsername();
         likeablePersonRepository.delete(likeablePeople);
         return RsData.of("S-1","%s에 대한 호감이 삭제 되었습니다.".formatted(toInstaMemberUsername));
+    }
+
+
+    @Transactional
+    public RsData<LikeablePerson> canLike(Member actor, String username, int attractiveTypeCode) {
+        int like_List_Max = (int)AppConfig.getLikeablePersonFromMax();
+
+        if ( actor.hasConnectedInstaMember() == false ) {
+            return RsData.of("F-2", "먼저 본인의 인스타그램 아이디를 입력해야 합니다.");
+        }
+
+        // 등록하려는 대상이 이미 호감 목록에 존재하는지 확인
+        LikeablePerson existLikeablePeople = exist(actor.getInstaMember(), username);
+
+        if(existLikeablePeople != null){
+            if(existLikeablePeople.getAttractiveTypeCode() != attractiveTypeCode){
+                //return modifyAttractive(existLikeablePeople,attractiveTypeCode);
+                return RsData.of("S-2","수정 가능합니다.",existLikeablePeople);
+            }
+            return RsData.of("F-3", "중복으로 호감표시를 할 수 없습니다.");
+        }
+//        else if(existLikeablePeople == null)
+//            return RsData.of("S-2", "%s에 대해 호감표시가 가능합니다.".formatted(username));
+
+        if (actor.getInstaMember().getUsername().equals(username)) {
+            return RsData.of("F-1", "본인을 호감상대로 등록할 수 없습니다.");
+        }
+
+        // 호감 표시 대상 10명 체크
+        List<LikeablePerson> fromLikeableList = actor.getInstaMember().getFromLikealbePeople();
+        if(fromLikeableList.size() >= like_List_Max)
+            return RsData.of("F-3", "호감표시는 %d명을 넘을 수 없습니다.".formatted(like_List_Max));
+
+        return RsData.of("S-1", "%s에 대해 호감표시가 가능합니다.".formatted(username));
     }
 }
