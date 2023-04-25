@@ -9,7 +9,7 @@
 <!-- 테일윈드 불러오기 -->
 <script src="https://cdn.tailwindcss.com"></script>
 
-<main layout:fragment="main">
+<main layout:fragment="main" class="flex-grow flex items-center justify-center">
 
     <script>
         function LoginForm__submit(form) {
@@ -47,7 +47,7 @@
             form.submit(); // 폼 발송
         }
     </script>
-    <div class="flex-grow flex items-center justify-center">
+
         <div class="max-w-2xl w-full px-4">
             <h1 class="mb-4">
                 <i class="fa-solid fa-arrow-right-to-bracket"></i>
@@ -99,7 +99,6 @@
                 <a href="#" class="btn btn-link">비밀번호찾기</a>
             </div>
         </div>
-    </div>
 
 
     <!--
