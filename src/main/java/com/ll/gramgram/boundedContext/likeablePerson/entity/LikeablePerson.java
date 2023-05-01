@@ -30,6 +30,8 @@ public class LikeablePerson extends BaseEntity {
     private String toInstaMemberUsername; // 혹시 몰라서 기록
     private int attractiveTypeCode; // 매력포인트(1=외모, 2=성격, 3=능력)
 
+
+
     public String getAttractiveTypeDisplayName() {
         return switch (attractiveTypeCode) {
             case 1 -> "외모";
