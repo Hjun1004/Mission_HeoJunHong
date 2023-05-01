@@ -76,3 +76,6 @@ custom:
     modifyCoolTime: 30
     from:
       max: 10
+    action:
+      modify: modify
+      cancel: cancel

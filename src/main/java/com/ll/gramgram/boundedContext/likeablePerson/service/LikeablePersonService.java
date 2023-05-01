@@ -88,11 +88,11 @@ public class LikeablePersonService {
     }
 
     public RsData canCancel(Member actor, LikeablePerson likeablePerson) {
-        long diff = ChronoUnit.SECONDS.between(likeablePerson.getModifyDate(), LocalDateTime.now()); // 현재시간 - 최종수정시간 = 수정 후 지금까지 흐른시간
-        long likeablePersonModifyTimes = AppConfig.getLikeablePersonModifyCoolTime();
-        if(diff<likeablePersonModifyTimes){ // ex) 10초 < 30초 (지금까지 흐른시간이 쿨타임보다 커야 삭제가 가능함)
-            return RsData.of("F-1", "삭제하기 위해서는 %d초의 시간이 필요합니다.".formatted(likeablePersonModifyTimes));
-        }
+        String action = AppConfig.getLikeablePersonActionCancel();
+
+        // 내가 구현한 삭제 쿨타임
+        RsData timeCheckRsData = timeCheck(likeablePerson, action);
+        if(timeCheckRsData.getResultCode().equals("F-1")) return timeCheckRsData;
 
         if (likeablePerson == null) return RsData.of("F-1", "이미 삭제되었습니다.");
 
@@ -207,11 +207,10 @@ public class LikeablePersonService {
     }
 
     public RsData canModifyLike(Member actor, LikeablePerson likeablePerson) {
-        long diff = ChronoUnit.SECONDS.between(likeablePerson.getModifyDate(), LocalDateTime.now()); // 현재시간 - 최종수정시간 = 수정 후 지금까지 흐른시간
-        long likeablePersonModifyTimes = AppConfig.getLikeablePersonModifyCoolTime();
-        if(diff<likeablePersonModifyTimes){ // ex) 10초 < 30초 (지금까지 흐른시간이 쿨타임보다 커야 수정이 가능함)
-            return RsData.of("F-1", "변경하기 위해서는 %d초의 시간이 필요합니다.".formatted(likeablePersonModifyTimes));
-        }
+        String action = AppConfig.getLikeablePersonActionModify();
+        // 내가 구현한 수정 쿨타임
+        RsData timeCheckRsData = timeCheck(likeablePerson, action);
+        if(timeCheckRsData.getResultCode().equals("F-1")) return timeCheckRsData;
 
         if (!actor.hasConnectedInstaMember()) {
             return RsData.of("F-1", "먼저 본인의 인스타그램 아이디를 입력해주세요.");
@@ -224,5 +223,18 @@ public class LikeablePersonService {
         }
 
         return RsData.of("S-1", "호감표시취소가 가능합니다.");
+    }
+
+    private RsData timeCheck(LikeablePerson likeablePerson, String activate) {
+        long diff = ChronoUnit.SECONDS.between(likeablePerson.getModifyDate(), LocalDateTime.now());
+        long likeablePersonModifyTimes = AppConfig.getLikeablePersonModifyCoolTime();
+        String action = null;
+        if(activate.equals(AppConfig.getLikeablePersonActionModify())) action="호감사유를 변경";
+        else if(activate.equals(AppConfig.getLikeablePersonActionCancel())) action = "호감을 삭제";
+
+        if(diff<likeablePersonModifyTimes){
+            return RsData.of("F-1", "%s하기 위해서는 %d초의 시간이 필요합니다.".formatted(action, likeablePersonModifyTimes));
+        }
+        return RsData.of("S-1", "변경이 가능합니다.");
     }
 }
