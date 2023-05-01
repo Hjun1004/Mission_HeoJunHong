@@ -40,6 +40,9 @@ dependencies {
     annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+    //테스트 시에는 메모리 DB 사용하도록 허용
+    runtimeOnly 'com.h2databse:h2'
 }
 
 tasks.named('test') {

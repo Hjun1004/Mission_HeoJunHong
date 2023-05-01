@@ -6,11 +6,66 @@
 
 <body>
 
-<main layout:fragment="main">
-    <div>번호 : <span th:text="${@rq.member.id}"></span></div>
+<main layout:fragment="main" class="flex-grow flex items-center justify-center">
+    <th:block th:unless="${@rq.member.hasConnectedInstaMember}">
+        <div>먼저 본인의 인스타그램 아이디를 입력해주세요.</div>
+
+        <div>
+            <a href="/instaMember/connect" class="btn btn-link">본인의 인스타그램 아이디 입력하기</a>
+        </div>
+    </th:block>
+
+    <div th:if="${@rq.member.hasConnectedInstaMember}" class="max-w-2xl w-full px-4">
+        <h1 class="mb-4">
+            <i class="fa-solid fa-user"></i>
+            내 정보
+        </h1>
+
+        <div class="flex flex-col gap-4">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title">
+                        <i class="fa-solid fa-user"></i>
+                        내 정보
+                    </h2>
+
+                    <div class="mt-4">
+                        <div>
+                            <span class="badge badge-primary">인스타 아이디</span>
+                        </div>
+                        <div class="mt-2">
+                            <i class="fa-brands fa-instagram"></i>
+                            <span th:text="${@rq.member.instaMember.username}"></span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <div>
+                            <span class="badge badge-primary">이름</span>
+                        </div>
+                        <div class="mt-2">
+                            <i class="fa-solid fa-user"></i>
+                            <span th:text="${@rq.member.nickname}"></span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <div>
+                            <span class="badge badge-primary">가입</span>
+                        </div>
+                        <div class="mt-2">
+                            <i class="fa-regular fa-clock"></i>
+                            <span th:text="${#temporals.format(@rq.member.createDate, 'yy.MM.dd')}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--<div>번호 : <span th:text="${@rq.member.id}"></span></div>
     <div>이름 : <span th:text="${@rq.member.username}"></span></div>
     <div>가입날짜 : <span th:text="${#temporals.format(@rq.member.createDate, 'yyyy-MM-dd HH:mm')}"></span></div>
-    <div>수정날짜 : <span th:text="${#temporals.format(@rq.member.modifyDate, 'yyyy-MM-dd HH:mm')}"></span></div>
+    <div>수정날짜 : <span th:text="${#temporals.format(@rq.member.modifyDate, 'yyyy-MM-dd HH:mm')}"></span></div>-->
 </main>
 
 
