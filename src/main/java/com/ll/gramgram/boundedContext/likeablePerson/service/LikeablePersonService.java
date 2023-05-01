@@ -15,6 +15,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -86,6 +88,12 @@ public class LikeablePersonService {
     }
 
     public RsData canCancel(Member actor, LikeablePerson likeablePerson) {
+        long diff = ChronoUnit.SECONDS.between(likeablePerson.getModifyDate(), LocalDateTime.now()); // 현재시간 - 최종수정시간 = 수정 후 지금까지 흐른시간
+        long likeablePersonModifyTimes = AppConfig.getLikeablePersonModifyCoolTime();
+        if(diff<likeablePersonModifyTimes){ // ex) 10초 < 30초 (지금까지 흐른시간이 쿨타임보다 커야 삭제가 가능함)
+            return RsData.of("F-1", "삭제하기 위해서는 %d초의 시간이 필요합니다.".formatted(likeablePersonModifyTimes));
+        }
+
         if (likeablePerson == null) return RsData.of("F-1", "이미 삭제되었습니다.");
 
         // 수행자의 인스타계정 번호
@@ -199,6 +207,12 @@ public class LikeablePersonService {
     }
 
     public RsData canModifyLike(Member actor, LikeablePerson likeablePerson) {
+        long diff = ChronoUnit.SECONDS.between(likeablePerson.getModifyDate(), LocalDateTime.now()); // 현재시간 - 최종수정시간 = 수정 후 지금까지 흐른시간
+        long likeablePersonModifyTimes = AppConfig.getLikeablePersonModifyCoolTime();
+        if(diff<likeablePersonModifyTimes){ // ex) 10초 < 30초 (지금까지 흐른시간이 쿨타임보다 커야 수정이 가능함)
+            return RsData.of("F-1", "변경하기 위해서는 %d초의 시간이 필요합니다.".formatted(likeablePersonModifyTimes));
+        }
+
         if (!actor.hasConnectedInstaMember()) {
             return RsData.of("F-1", "먼저 본인의 인스타그램 아이디를 입력해주세요.");
         }
