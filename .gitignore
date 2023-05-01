@@ -39,4 +39,7 @@ out/
 .vscode/
 
 ### Custom ###
+application-secret.yml
+
+### Custom ###
 src/main/generated
