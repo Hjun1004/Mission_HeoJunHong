@@ -58,4 +58,22 @@ public class NotificationService {
     }
 
 
+    public void whenAfterModifyAttractiveType(LikeablePerson likeablePerson, int oldAttractiveTypeCode) {
+        InstaMember fromInstaMember = likeablePerson.getFromInstaMember();
+        InstaMember toInstaMember = likeablePerson.getToInstaMember();
+
+        Notification notification = Notification
+                .builder()
+                .readDate(null)
+                .toInstaMember(toInstaMember)
+                .fromInstaMember(fromInstaMember)
+                .typeCode("Modify")
+                .oldGender(null)
+                .oldAttractiveTypeCode(oldAttractiveTypeCode)
+                .newGender(null)
+                .newAttractiveTypeCode(likeablePerson.getAttractiveTypeCode())
+                .build();
+
+        notificationRepository.save(notification);
+    }
 }

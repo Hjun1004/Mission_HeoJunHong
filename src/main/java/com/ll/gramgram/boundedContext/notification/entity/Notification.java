@@ -39,6 +39,12 @@ public class Notification extends BaseEntity {
     public boolean isRead(){
         return readDate!=null;
     }
+    public boolean isModify(){
+        return typeCode.equals("Modify");
+    }
+    public boolean isLike(){
+        return typeCode.equals("Like");
+    }
 
     public String passedTime(){
         long passingTime = ChronoUnit.MINUTES.between(getCreateDate(),LocalDateTime.now());
@@ -55,6 +61,15 @@ public class Notification extends BaseEntity {
             default -> "능력";
         };
     }
+
+    public String getOldAttractiveTypeDisplayName() {
+        return switch (oldAttractiveTypeCode) {
+            case 1 -> "외모";
+            case 2 -> "성격";
+            default -> "능력";
+        };
+    }
+
 
     public String getGenderDisplayName() {
         return switch (fromInstaMember.getGender()) {

@@ -22,4 +22,10 @@ public class NotificationEventListener {
         notificationService.readNotification(event.getNotification());
     }
 
+    @EventListener
+    @Transactional
+    public void listen(EventAfterModifyAttractiveType event) {
+        notificationService.whenAfterModifyAttractiveType(event.getLikeablePerson(), event.getOldAttractiveTypeCode());
+    }
+
 }

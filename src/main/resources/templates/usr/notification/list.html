@@ -39,9 +39,15 @@
                                         <i class="fa-regular fa-message"></i>
                                         내용
                                     </div>
-                                    <div>
+                                    <div th:if="${notification.isLike()}">
                                         어떤 <span class="badge badge-primary" th:text="|${notification.getGenderDisplayName()}|"></span>이 당신을 <span
                                             class="badge badge-primary"  th:text="|${notification.getAttractiveTypeDisplayName()}|"></span> 때문에 좋아합니다.
+                                    </div>
+                                    <div th:if="${notification.isModify()}">
+                                        어떤 <span class="badge badge-primary" th:text="|${notification.getGenderDisplayName()}|"></span>이 당신에 대한 호감사유를 <span
+                                            class="badge badge-primary" th:text="|${notification.getOldAttractiveTypeDisplayName()}|"></span>
+                                        에서 <span class="badge badge-primary" th:text="|${notification.getAttractiveTypeDisplayName()}|"></span>으로
+                                        변경했습니다.
                                     </div>
                                 </div>
                             </a>
