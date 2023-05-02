@@ -1,19 +1,61 @@
 package com.ll.gramgram.boundedContext.notification.service;
 
+import com.ll.gramgram.base.event.EventAfterLike;
+import com.ll.gramgram.base.event.EventReadNotifications;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
+import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.notification.entity.Notification;
 import com.ll.gramgram.boundedContext.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class NotificationService {
     private final NotificationRepository notificationRepository;
+    private final ApplicationEventPublisher publisher;
+
+    @Transactional
+    public Notification findById(Long id) {
+        return notificationRepository.findById(id).orElse(null);
+    }
 
     public List<Notification> findByToInstaMember(InstaMember toInstaMember) {
         return notificationRepository.findByToInstaMember(toInstaMember);
     }
+
+    public void whenAfterLike(LikeablePerson likeablePerson) {
+        InstaMember fromInstaMember = likeablePerson.getFromInstaMember();
+        InstaMember toInstaMember = likeablePerson.getToInstaMember();
+
+        Notification notification = Notification
+                .builder()
+                .readDate(null)
+                .toInstaMember(toInstaMember)
+                .fromInstaMember(fromInstaMember)
+                .typeCode("Like")
+                .oldGender(null)
+                .oldAttractiveTypeCode(0)
+                .newGender(null)
+                .newAttractiveTypeCode(likeablePerson.getAttractiveTypeCode())
+                .build();
+
+        notificationRepository.save(notification);
+    }
+
+    @Transactional
+    public void read(Notification notification) {
+        publisher.publishEvent(new EventReadNotifications(this, notification));
+    }
+
+    public void readNotification(Notification notification) {
+        notification.setReadDate();
+    }
+
+
 }

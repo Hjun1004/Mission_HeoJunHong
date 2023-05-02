@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Getter
@@ -29,4 +31,35 @@ public class Notification extends BaseEntity {
     private int oldAttractiveTypeCode; // 해당사항 없으면 0
     private String newGender; // 해당사항 없으면 null
     private int newAttractiveTypeCode; // 해당사항 없으면 0
+
+    public void setReadDate(){
+        readDate = LocalDateTime.now();
+    }
+
+    public boolean isRead(){
+        return readDate!=null;
+    }
+
+    public String passedTime(){
+        long passingTime = ChronoUnit.MINUTES.between(getCreateDate(),LocalDateTime.now());
+
+        if(passingTime <= 0) return "지금";
+        else if(passingTime < 60) return "%s분 전".formatted(passingTime);
+        else return "%s시간 전".formatted(passingTime / 60);
+    }
+
+    public String getAttractiveTypeDisplayName() {
+        return switch (newAttractiveTypeCode) {
+            case 1 -> "외모";
+            case 2 -> "성격";
+            default -> "능력";
+        };
+    }
+
+    public String getGenderDisplayName() {
+        return switch (fromInstaMember.getGender()) {
+            case "W" -> "여성";
+            default -> "남성";
+        };
+    }
 }
