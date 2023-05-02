@@ -43,9 +43,6 @@
                                         어떤 <span class="badge badge-primary" th:text="|${notification.getGenderDisplayName()}|"></span>이 당신을 <span
                                             class="badge badge-primary"  th:text="|${notification.getAttractiveTypeDisplayName()}|"></span> 때문에 좋아합니다.
                                     </div>
-                                    <div th:if="${notification.isRead()}">
-                                        <span>읽음:</span><span class="badge badge-primary" th:text="${#temporals.format(notification.readDate, 'yy.MM.dd HH:mm')}"></span>
-                                    </div>
                                 </div>
                             </a>
                         </div>
