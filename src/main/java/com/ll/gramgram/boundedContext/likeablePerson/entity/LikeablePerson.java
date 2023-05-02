@@ -47,10 +47,10 @@ public class LikeablePerson extends BaseEntity {
         int remainMinutes = (remainTime%3600)/60;
         int remainSeconds = (remainTime%3600)%60;
 
-        if(remainHours > 0) return "%s시간 %s분 %s초 후".formatted(remainHours, remainMinutes, remainSeconds);
-        else if(remainHours == 0 && remainMinutes > 0) return "%s분 %s초 후".formatted(remainMinutes, remainSeconds);
+        if(remainHours > 0) return "%s시간 %s분 %s초".formatted(remainHours, remainMinutes, remainSeconds);
+        else if(remainHours == 0 && remainMinutes > 0) return "%s분 %s초".formatted(remainMinutes, remainSeconds);
 
-        return "%s초 후".formatted(remainSeconds);
+        return "%s초".formatted(remainSeconds);
     }
 
     public RsData updateAttractionTypeCode(int attractiveTypeCode) {

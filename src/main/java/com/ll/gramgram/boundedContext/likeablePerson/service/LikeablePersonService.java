@@ -233,7 +233,8 @@ public class LikeablePersonService {
         else if(activate.equals(AppConfig.getLikeablePersonActionCancel())) action = "호감을 삭제";
 
         if(diff<likeablePersonModifyTimes){
-            return RsData.of("F-1", "%s하기 위해서는 %d초의 시간이 필요합니다.".formatted(action, likeablePersonModifyTimes));
+            String explain = "%s하기 위해서는".formatted(action) + likeablePerson.getModifyUnlockDateRemainStrHuman() + "의 시간이 필요합니다.";
+            return RsData.of("F-1", explain);
         }
         return RsData.of("S-1", "변경이 가능합니다.");
     }
