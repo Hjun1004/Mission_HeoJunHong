@@ -90,11 +90,12 @@ public class LikeablePersonService {
     public RsData canCancel(Member actor, LikeablePerson likeablePerson) {
         String action = AppConfig.getLikeablePersonActionCancel();
 
+        if (likeablePerson == null) return RsData.of("F-1", "이미 삭제되었습니다.");
+
         // 내가 구현한 삭제 쿨타임
         RsData timeCheckRsData = timeCheck(likeablePerson, action);
         if(timeCheckRsData.getResultCode().equals("F-1")) return timeCheckRsData;
 
-        if (likeablePerson == null) return RsData.of("F-1", "이미 삭제되었습니다.");
 
         // 수행자의 인스타계정 번호
         long actorInstaMemberId = actor.getInstaMember().getId();
