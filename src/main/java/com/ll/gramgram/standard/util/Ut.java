@@ -15,16 +15,21 @@ import java.util.Base64;
 public class Ut {
     public static class time{
         public static String diffFormat1Human(LocalDateTime now, LocalDateTime modifyUnlockDate) {
+            String suffix = modifyUnlockDate.isAfter(now)? "후": "전";
+
             int remainTime = (int) Duration.between(now,modifyUnlockDate).getSeconds();
 
-            int remainHours = remainTime/3600;
-            int remainMinutes = (remainTime%3600)/60;
-            int remainSeconds = (remainTime%3600)%60;
+            int remainSeconds = remainTime % 60;
+            int remainMinutes = remainTime / 60 % 60; // 60분이 넘어가면 % 60 을 통해 다시 1분부터 시작
+            int remainHours = remainTime / (60 * 60) ;
 
-            if(remainHours > 0) return "%s시간 %s분 %s초".formatted(remainHours, remainMinutes, remainSeconds);
-            else if(remainHours == 0 && remainMinutes > 0) return "%s분 %s초".formatted(remainMinutes, remainSeconds);
+            StringBuilder sb = new StringBuilder();
 
-            return "%s초".formatted(remainSeconds);
+            if(remainHours > 0) sb.append(remainHours).append("시간 ");
+            if(remainMinutes > 0) sb.append(remainMinutes).append("분 ");
+            if(remainSeconds > 0) sb.append(remainSeconds).append("초 ");
+
+            return sb.append(suffix).toString();
         }
     }
     public static class reflection {
