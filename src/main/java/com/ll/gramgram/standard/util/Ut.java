@@ -7,10 +7,26 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Base64;
 
 public class Ut {
+    public static class time{
+        public static String diffFormat1Human(LocalDateTime now, LocalDateTime modifyUnlockDate) {
+            int remainTime = (int) Duration.between(now,modifyUnlockDate).getSeconds();
+
+            int remainHours = remainTime/3600;
+            int remainMinutes = (remainTime%3600)/60;
+            int remainSeconds = (remainTime%3600)%60;
+
+            if(remainHours > 0) return "%s시간 %s분 %s초".formatted(remainHours, remainMinutes, remainSeconds);
+            else if(remainHours == 0 && remainMinutes > 0) return "%s분 %s초".formatted(remainMinutes, remainSeconds);
+
+            return "%s초".formatted(remainSeconds);
+        }
+    }
     public static class reflection {
         public static boolean setFieldValue(Object o, String fieldName, Object value) {
             Field field = null;
