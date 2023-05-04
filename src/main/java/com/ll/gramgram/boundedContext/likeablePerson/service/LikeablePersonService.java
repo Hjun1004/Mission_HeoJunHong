@@ -227,19 +227,12 @@ public class LikeablePersonService {
     }
 
     private RsData timeCheck(LikeablePerson likeablePerson, String activate) {
-//        long diff = ChronoUnit.SECONDS.between(likeablePerson.getModifyDate(), LocalDateTime.now());
-//        long likeablePersonModifyTimes = AppConfig.getLikeablePersonModifyCoolTime();
         String action = null;
-        if(activate.equals(AppConfig.getLikeablePersonActionModify())) action="호감사유를 변경";
-        else if(activate.equals(AppConfig.getLikeablePersonActionCancel())) action = "호감을 삭제";
+        if(activate.equals(AppConfig.getLikeablePersonActionModify())) action="호감사유 변경은";
+        else if(activate.equals(AppConfig.getLikeablePersonActionCancel())) action = "호감 삭제는";
 
-//        if(diff<likeablePersonModifyTimes){
-//            String explain = "%s하기 위해서는".formatted(action) + likeablePerson.getModifyUnlockDateRemainStrHuman() + "의 시간이 필요합니다.";
-//            return RsData.of("F-1", explain);
-//        }
-
-        if(likeablePerson.getModifyUnlockDate().isAfter(LocalDateTime.now())){
-            String explain = "%s하기 위해서는".formatted(action) + likeablePerson.getModifyUnlockDateRemainStrHuman() + "의 시간이 필요합니다.";
+        if(!likeablePerson.isModifyUnlocked()){
+            String explain = "%s".formatted(action) + likeablePerson.getModifyUnlockDateRemainStrHuman() + "에 가능합니다.";
             return RsData.of("F-1", explain);
         }
         return RsData.of("S-1", "변경이 가능합니다.");
