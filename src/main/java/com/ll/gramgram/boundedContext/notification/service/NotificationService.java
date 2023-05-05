@@ -60,22 +60,22 @@ public class NotificationService {
     }
 
 
-    public void whenAfterModifyAttractiveType(LikeablePerson likeablePerson, int oldAttractiveTypeCode) {
+    public RsData<Notification> whenAfterModifyAttractiveType(LikeablePerson likeablePerson, int oldAttractiveTypeCode) {
         InstaMember fromInstaMember = likeablePerson.getFromInstaMember();
         InstaMember toInstaMember = likeablePerson.getToInstaMember();
 
         Notification notification = Notification
                 .builder()
-                .readDate(null)
                 .toInstaMember(toInstaMember)
                 .fromInstaMember(fromInstaMember)
                 .typeCode("Modify")
-                .oldGender(null)
+                .oldGender(fromInstaMember.getGender())
                 .oldAttractiveTypeCode(oldAttractiveTypeCode)
-                .newGender(null)
+                .newGender(fromInstaMember.getGender())
                 .newAttractiveTypeCode(likeablePerson.getAttractiveTypeCode())
                 .build();
 
         notificationRepository.save(notification);
+        return RsData.of("S-1", "알림 메세지가 생성되었습니다.", notification);
     }
 }
