@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class NotificationEventListener {
     private final NotificationService notificationService;
 
@@ -17,14 +18,12 @@ public class NotificationEventListener {
         notificationService.whenAfterLike(event.getLikeablePerson());
     }
 
-
     @EventListener
     public void listen(EventReadNotifications event) {
         notificationService.readNotification(event.getNotification());
     }
 
     @EventListener
-    @Transactional
     public void listen(EventAfterModifyAttractiveType event) {
         notificationService.whenAfterModifyAttractiveType(event.getLikeablePerson(), event.getOldAttractiveTypeCode());
     }

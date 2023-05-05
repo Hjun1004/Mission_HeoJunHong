@@ -2,6 +2,7 @@ package com.ll.gramgram.boundedContext.notification.service;
 
 import com.ll.gramgram.base.event.EventAfterLike;
 import com.ll.gramgram.base.event.EventReadNotifications;
+import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.notification.entity.Notification;
@@ -29,23 +30,24 @@ public class NotificationService {
         return notificationRepository.findByToInstaMember(toInstaMember);
     }
 
-    public void whenAfterLike(LikeablePerson likeablePerson) {
+    public RsData<Notification> whenAfterLike(LikeablePerson likeablePerson) {
         InstaMember fromInstaMember = likeablePerson.getFromInstaMember();
         InstaMember toInstaMember = likeablePerson.getToInstaMember();
 
         Notification notification = Notification
                 .builder()
-                .readDate(null)
                 .toInstaMember(toInstaMember)
                 .fromInstaMember(fromInstaMember)
                 .typeCode("Like")
                 .oldGender(null)
                 .oldAttractiveTypeCode(0)
-                .newGender(null)
+                .newGender(fromInstaMember.getGender())
                 .newAttractiveTypeCode(likeablePerson.getAttractiveTypeCode())
                 .build();
 
         notificationRepository.save(notification);
+
+        return RsData.of("S-1", "알림 메세지가 생성되었습니다.", notification);
     }
 
     @Transactional

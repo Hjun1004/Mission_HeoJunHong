@@ -72,7 +72,7 @@ public class Notification extends BaseEntity {
 
 
     public String getGenderDisplayName() {
-        return switch (fromInstaMember.getGender()) {
+        return switch (getNewGender()) {
             case "W" -> "여성";
             default -> "남성";
         };
