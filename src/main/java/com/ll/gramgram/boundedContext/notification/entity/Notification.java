@@ -54,6 +54,13 @@ public class Notification extends BaseEntity {
         else return "%s시간 전".formatted(passingTime / 60);
     }
 
+    public boolean isHot(){
+        // 만들어진지 60분이 안되었다면 hot 으로 설정
+        // 알림이 만들어진 시간이 현재 시간에서 한 시간을 뺀 시간보다 이후이면 Hot
+        return getCreateDate().isAfter(LocalDateTime.now().minusMinutes(60));
+    }
+
+
     public String getAttractiveTypeDisplayName() {
         return switch (newAttractiveTypeCode) {
             case 1 -> "외모";
@@ -72,7 +79,7 @@ public class Notification extends BaseEntity {
 
 
     public String getGenderDisplayName() {
-        return switch (getNewGender()) {
+        return switch (newGender) {
             case "W" -> "여성";
             default -> "남성";
         };
