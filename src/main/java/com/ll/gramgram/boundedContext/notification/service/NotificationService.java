@@ -88,4 +88,8 @@ public class NotificationService {
     public List<Notification> findByToInstaMember_username(String username) {
         return notificationRepository.findByToInstaMember_username(username);
     }
+
+    public boolean countUnreadNotificationsByToInstaMember(InstaMember instaMember) {
+        return notificationRepository.countByToInstaMemberAndReadDateIsNull(instaMember) > 0;
+    }
 }
