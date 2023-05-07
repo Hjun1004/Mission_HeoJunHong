@@ -18,10 +18,10 @@ public class NotificationEventListener {
         notificationService.whenAfterLike(event.getLikeablePerson());
     }
 
-    @EventListener
-    public void listen(EventReadNotifications event) {
-        notificationService.readNotification(event.getNotification());
-    }
+//    @EventListener
+//    public void listen(EventReadNotifications event) {
+//        notificationService.readNotification(event.getNotification());
+//    }
 
     @EventListener
     public void listen(EventAfterModifyAttractiveType event) {

@@ -37,13 +37,23 @@ public class NotificationService {
 
     }
 
+//    @Transactional
+//    public void read(Notification notification) {
+//        publisher.publishEvent(new EventReadNotifications(this, notification));
+//    }
+
     @Transactional
-    public void read(Notification notification) {
-        publisher.publishEvent(new EventReadNotifications(this, notification));
+    public RsData markAsRead(List<Notification> notifications) {
+        notifications
+                .stream()
+                .filter(notification -> !notification.isRead())
+                .forEach(Notification::updateReadDate);
+
+        return RsData.of("S-1", "읽음처리 되었습니다.");
     }
 
     public void readNotification(Notification notification) {
-        notification.setReadDate();
+        notification.updateReadDate();
     }
 
 
@@ -72,5 +82,10 @@ public class NotificationService {
         notificationRepository.save(notification);
 
         return RsData.of("S-1", "알림 메세지가 생성되었습니다.", notification);
+    }
+
+
+    public List<Notification> findByToInstaMember_username(String username) {
+        return notificationRepository.findByToInstaMember_username(username);
     }
 }

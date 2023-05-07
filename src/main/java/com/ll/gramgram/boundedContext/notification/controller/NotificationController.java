@@ -28,6 +28,8 @@ public class NotificationController {
         }
 
         List<Notification> notifications = notificationService.findByToInstaMember(rq.getMember().getInstaMember());
+        notificationService.markAsRead(notifications);
+
 
         model.addAttribute("notifications", notifications);
 
@@ -37,7 +39,7 @@ public class NotificationController {
     @GetMapping(value = "/detail/{id}")
     public String detail(Model model, @PathVariable("id") Long id){
         Notification notification = (Notification) notificationService.findById(id);
-        notificationService.read(notification);
+        //notificationService.read(notification);
         model.addAttribute("notification", notification);
         return "usr/notification/notification_detail";
     }
