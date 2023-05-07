@@ -7,10 +7,31 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Base64;
 
 public class Ut {
+    public static class time{
+        public static String diffFormat1Human(LocalDateTime now, LocalDateTime modifyUnlockDate) {
+            String suffix = modifyUnlockDate.isAfter(now)? "후": "전";
+
+            int remainTime = (int) Duration.between(now,modifyUnlockDate).getSeconds();
+
+            int remainSeconds = remainTime % 60;
+            int remainMinutes = remainTime / 60 % 60; // 60분이 넘어가면 % 60 을 통해 다시 1분부터 시작
+            int remainHours = remainTime / (60 * 60) ;
+
+            StringBuilder sb = new StringBuilder();
+
+            if(remainHours > 0) sb.append(remainHours).append("시간 ");
+            if(remainMinutes > 0) sb.append(remainMinutes).append("분 ");
+            if(remainSeconds > 0) sb.append(remainSeconds).append("초 ");
+
+            return sb.append(suffix).toString();
+        }
+    }
     public static class reflection {
         public static boolean setFieldValue(Object o, String fieldName, Object value) {
             Field field = null;

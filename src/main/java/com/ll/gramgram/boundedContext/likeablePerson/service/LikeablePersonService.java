@@ -15,6 +15,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -86,7 +88,14 @@ public class LikeablePersonService {
     }
 
     public RsData canCancel(Member actor, LikeablePerson likeablePerson) {
+        String action = AppConfig.getLikeablePersonActionCancel();
+
         if (likeablePerson == null) return RsData.of("F-1", "이미 삭제되었습니다.");
+
+        // 내가 구현한 삭제 쿨타임
+        RsData timeCheckRsData = timeCheck(likeablePerson, action);
+        if(timeCheckRsData.getResultCode().equals("F-1")) return timeCheckRsData;
+
 
         // 수행자의 인스타계정 번호
         long actorInstaMemberId = actor.getInstaMember().getId();
@@ -199,6 +208,11 @@ public class LikeablePersonService {
     }
 
     public RsData canModifyLike(Member actor, LikeablePerson likeablePerson) {
+        String action = AppConfig.getLikeablePersonActionModify();
+        // 내가 구현한 수정 쿨타임
+        RsData timeCheckRsData = timeCheck(likeablePerson, action);
+        if(timeCheckRsData.getResultCode().equals("F-1")) return timeCheckRsData;
+
         if (!actor.hasConnectedInstaMember()) {
             return RsData.of("F-1", "먼저 본인의 인스타그램 아이디를 입력해주세요.");
         }
@@ -210,5 +224,17 @@ public class LikeablePersonService {
         }
 
         return RsData.of("S-1", "호감표시취소가 가능합니다.");
+    }
+
+    private RsData timeCheck(LikeablePerson likeablePerson, String activate) {
+        String action = null;
+        if(activate.equals(AppConfig.getLikeablePersonActionModify())) action="호감사유 변경은";
+        else if(activate.equals(AppConfig.getLikeablePersonActionCancel())) action = "호감 삭제는";
+
+        if(!likeablePerson.isModifyUnlocked()){
+            String explain = "%s".formatted(action) + likeablePerson.getModifyUnlockDateRemainStrHuman() + "에 가능합니다.";
+            return RsData.of("F-1", explain);
+        }
+        return RsData.of("S-1", "변경이 가능합니다.");
     }
 }

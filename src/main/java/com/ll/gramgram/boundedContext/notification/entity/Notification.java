@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Getter
@@ -29,4 +31,57 @@ public class Notification extends BaseEntity {
     private int oldAttractiveTypeCode; // 해당사항 없으면 0
     private String newGender; // 해당사항 없으면 null
     private int newAttractiveTypeCode; // 해당사항 없으면 0
+
+    public void updateReadDate(){
+        readDate = LocalDateTime.now();
+    }
+
+    public boolean isRead(){
+        return readDate!=null;
+    }
+    public boolean isModify(){
+        return typeCode.equals("Modify");
+    }
+    public boolean isLike(){
+        return typeCode.equals("Like");
+    }
+
+    public String passedTime(){
+        long passingTime = ChronoUnit.MINUTES.between(getCreateDate(),LocalDateTime.now());
+
+        if(passingTime <= 0) return "지금";
+        else if(passingTime < 60) return "%s분 전".formatted(passingTime);
+        else return "%s시간 전".formatted(passingTime / 60);
+    }
+
+    public boolean isHot(){
+        // 만들어진지 60분이 안되었다면 hot 으로 설정
+        // 알림이 만들어진 시간이 현재 시간에서 한 시간을 뺀 시간보다 이후이면 Hot
+        return getCreateDate().isAfter(LocalDateTime.now().minusMinutes(60));
+    }
+
+
+    public String getAttractiveTypeDisplayName() {
+        return switch (newAttractiveTypeCode) {
+            case 1 -> "외모";
+            case 2 -> "성격";
+            default -> "능력";
+        };
+    }
+
+    public String getOldAttractiveTypeDisplayName() {
+        return switch (oldAttractiveTypeCode) {
+            case 1 -> "외모";
+            case 2 -> "성격";
+            default -> "능력";
+        };
+    }
+
+
+    public String getGenderDisplayName() {
+        return switch (newGender) {
+            case "W" -> "여성";
+            default -> "남성";
+        };
+    }
 }
