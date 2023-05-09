@@ -122,9 +122,23 @@ public class LikeablePersonController {
         return rq.redirectWithMsg("/usr/likeablePerson/list", rsData);
     }
 
+
+//    @PreAuthorize("isAuthenticated()")
+//    @GetMapping("/toList")
+//    public String showToList1(Model model){
+//        InstaMember instaMember = rq.getMember().getInstaMember();
+//
+//        if(instaMember != null){
+//            List<LikeablePerson> likeablePeople = instaMember.getToLikeablePeople();
+//            model.addAttribute("likeablePeople", likeablePeople);
+//        }
+//
+//        return "usr/likeablePerson/toList";
+//    }
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/toList")
-    public String showToList(Model model, String gender, @RequestParam(defaultValue = "0") int attractiveTypeCode,  @RequestParam(defaultValue = "1") int sortCode) {
+    public String showToList(Model model, @RequestParam(defaultValue = "") String gender, @RequestParam(defaultValue = "0") int attractiveTypeCode,  @RequestParam(defaultValue = "1") int sortCode) {
         if(gender.trim().equals("")) gender = null;
 
         InstaMember instaMember = rq.getMember().getInstaMember();
