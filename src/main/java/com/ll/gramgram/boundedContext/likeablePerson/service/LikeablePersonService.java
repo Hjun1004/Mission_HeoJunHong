@@ -15,6 +15,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.datatransfer.Clipboard;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -250,5 +251,13 @@ public class LikeablePersonService {
                 .filter(e -> e.getFromInstaMember().getGender().equals(gender));
 
         return RsData.of("S-1", "성별을 기준으로 정렬했습니다.",likeablePeopleStream);
+    }
+
+    public RsData<Stream> attractiveSorted(Stream<LikeablePerson> likeablePeopleStream, int attractiveTypeCode) {
+        if(likeablePeopleStream == null) return RsData.of("F-1", "호감을 받지 않았습니다.");
+
+        likeablePeopleStream = likeablePeopleStream.filter(e -> e.getAttractiveTypeCode() == attractiveTypeCode);
+
+        return RsData.of("S-1", "호감사유를 기준으로 정렬했습니다.",likeablePeopleStream);
     }
 }

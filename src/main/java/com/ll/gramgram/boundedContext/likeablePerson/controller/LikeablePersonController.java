@@ -151,6 +151,10 @@ public class LikeablePersonController {
                 likeablePeopleStream = likeablePersonService.genderSorted(likeablePeopleStream, gender).getData();
             }
 
+            if (attractiveTypeCode != 0) {
+                likeablePeopleStream = likeablePersonService.attractiveSorted(likeablePeopleStream, attractiveTypeCode).getData();
+            }
+
             List<LikeablePerson> likeablePeople = likeablePeopleStream.collect(Collectors.toList());
 
             model.addAttribute("likeablePeople", likeablePeople);
