@@ -155,6 +155,8 @@ public class LikeablePersonController {
                 likeablePeopleStream = likeablePersonService.attractiveSorted(likeablePeopleStream, attractiveTypeCode).getData();
             }
 
+            likeablePeopleStream = likeablePersonService.sortCodeSroted(likeablePeopleStream, sortCode).getData();
+
             List<LikeablePerson> likeablePeople = likeablePeopleStream.collect(Collectors.toList());
 
             model.addAttribute("likeablePeople", likeablePeople);

@@ -18,10 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.awt.datatransfer.Clipboard;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -259,5 +256,32 @@ public class LikeablePersonService {
         likeablePeopleStream = likeablePeopleStream.filter(e -> e.getAttractiveTypeCode() == attractiveTypeCode);
 
         return RsData.of("S-1", "호감사유를 기준으로 정렬했습니다.",likeablePeopleStream);
+    }
+
+    public RsData<Stream> sortCodeSroted(Stream<LikeablePerson> likeablePeopleStream, int sortCode) {
+        if(likeablePeopleStream == null) return RsData.of("F-1", "호감을 받지 않았습니다.");
+
+        switch (sortCode) {
+            case 1:
+                likeablePeopleStream = likeablePeopleStream.sorted(Comparator.comparing(LikeablePerson::getCreateDate));
+                break;
+            case 2:
+                likeablePeopleStream = likeablePeopleStream.sorted(Comparator.comparing(LikeablePerson::getCreateDate).reversed());
+                break;
+            case 3:
+                // likeablePeopleStream = likeablePeopleStream.sorted(??);
+                break;
+            case 4:
+                // likeablePeopleStream = likeablePeopleStream.sorted(??);
+                break;
+            case 5:
+                // likeablePeopleStream = likeablePeopleStream.sorted(??);
+                break;
+            case 6:
+                // likeablePeopleStream = likeablePeopleStream.sorted(??);
+                break;
+
+        }
+        return RsData.of("S-1", "정렬했습니다.",likeablePeopleStream);
     }
 }
