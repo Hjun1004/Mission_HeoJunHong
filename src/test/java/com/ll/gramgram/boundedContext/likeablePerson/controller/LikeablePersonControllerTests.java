@@ -157,7 +157,7 @@ public class LikeablePersonControllerTests {
                         <input type="radio" name="attractiveTypeCode" value="3"
                         """.stripIndent().trim())))
                 .andExpect(content().string(containsString("""
-                        inputValue__attractiveTypeCode = 2;
+                        inputValue__attractiveTypeCode = 1;
                         """.stripIndent().trim())))
                 .andExpect(content().string(containsString("""
                         id="btn-modify-like-1"

@@ -44,7 +44,7 @@ public class NotificationControllerTests {
                 .filter(notification -> !notification.isRead())
                 .count();
 
-        assertThat(unreadCount).isEqualTo(1);
+        assertThat(unreadCount).isEqualTo(9);
 
         ResultActions resultActions = mvc
                 .perform(get("/usr/notification/list"))

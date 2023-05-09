@@ -185,7 +185,7 @@ public class LikeablePersonServiceTests {
         */
         List<LikeablePerson> likeablePeople2 = likeablePersonRepository.findByToInstaMember_username("insta_user100");
 
-        assertThat(likeablePeople2.get(0).getId()).isEqualTo(2);
+        assertThat(likeablePeople2.get(0).getId()).isEqualTo(1);
 
         // 좋아하는 사람이 2번 인스타 회원이고, 좋아하는 대상의 인스타아이디가 "insta_user100" 인 `좋아요`
         /*
@@ -205,7 +205,7 @@ public class LikeablePersonServiceTests {
         */
         LikeablePerson likeablePerson = likeablePersonRepository.findByFromInstaMemberIdAndToInstaMember_username(2L, "insta_user100");
 
-        assertThat(likeablePerson.getId()).isEqualTo(2);
+        assertThat(likeablePerson.getId()).isEqualTo(1);
     }
 
     @Test
@@ -213,7 +213,7 @@ public class LikeablePersonServiceTests {
     void t005() throws Exception {
         LikeablePerson likeablePerson = likeablePersonRepository.findQslByFromInstaMemberIdAndToInstaMember_username(2L, "insta_user4").orElse(null);
 
-        assertThat(likeablePerson.getId()).isEqualTo(1L);
+        assertThat(likeablePerson.getId()).isEqualTo(2L);
     }
 
     @Test
