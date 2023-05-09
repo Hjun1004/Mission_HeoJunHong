@@ -269,13 +269,14 @@ public class LikeablePersonService {
                 likeablePeopleStream = likeablePeopleStream.sorted(Comparator.comparing(LikeablePerson::getCreateDate));
                 break;
             case 3:
-                // likeablePeopleStream = likeablePeopleStream.sorted(??);
+                likeablePeopleStream = likeablePeopleStream
+                        .sorted(Comparator.comparingInt((LikeablePerson p) -> p.getFromInstaMember().getToLikeablePeople().size()).reversed());
                 break;
             case 4:
-                // likeablePeopleStream = likeablePeopleStream.sorted(??);
+                likeablePeopleStream = likeablePeopleStream.sorted(Comparator.comparingInt(p -> p.getFromInstaMember().getToLikeablePeople().size()));
                 break;
             case 5:
-                // likeablePeopleStream = likeablePeopleStream.sorted(??);
+                //likeablePeopleStream = likeablePeopleStream.sorted();
                 break;
             case 6:
                 // likeablePeopleStream = likeablePeopleStream.sorted(??);
