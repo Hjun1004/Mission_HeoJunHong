@@ -274,7 +274,8 @@ public class LikeablePersonService {
                 // getLikes는 InstaMemberBase엔티티에 있는 나를 좋아하는 남성과 여성 숫자의 합이다.
                 break;
             case 4:
-                likeablePeopleStream = likeablePeopleStream.sorted(Comparator.comparingInt(p -> p.getFromInstaMember().getToLikeablePeople().size()));
+                likeablePeopleStream = likeablePeopleStream
+                        .sorted(Comparator.comparingLong((LikeablePerson p) -> p.getFromInstaMember().getLikes()));
                 break;
             case 5:
                 likeablePeopleStream = likeablePeopleStream.sorted(Comparator.comparing((LikeablePerson p) -> p.getFromInstaMember().getGender())
