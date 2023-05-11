@@ -263,10 +263,10 @@ public class LikeablePersonService {
 
         switch (sortCode) {
             case 1:
-                likeablePeopleStream = likeablePeopleStream.sorted(Comparator.comparing(LikeablePerson::getCreateDate).reversed());
+                likeablePeopleStream = likeablePeopleStream.sorted(Comparator.comparing(LikeablePerson::getId).reversed());
                 break;
             case 2:
-                likeablePeopleStream = likeablePeopleStream.sorted(Comparator.comparing(LikeablePerson::getCreateDate));
+                likeablePeopleStream = likeablePeopleStream.sorted(Comparator.comparing(LikeablePerson::getId));
                 break;
             case 3:
                 likeablePeopleStream = likeablePeopleStream
