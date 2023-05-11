@@ -240,7 +240,7 @@ public class LikeablePersonService {
     }
 
 
-    public RsData<Stream> genderSorted(Stream<LikeablePerson> likeablePeopleStream, String gender) {
+    public RsData<Stream> filterByGender(Stream<LikeablePerson> likeablePeopleStream, String gender) {
 
         if(likeablePeopleStream == null) return RsData.of("F-1", "호감을 받지 않았습니다.");
 
@@ -250,7 +250,7 @@ public class LikeablePersonService {
         return RsData.of("S-1", "성별을 기준으로 정렬했습니다.",likeablePeopleStream);
     }
 
-    public RsData<Stream> attractiveSorted(Stream<LikeablePerson> likeablePeopleStream, int attractiveTypeCode) {
+    public RsData<Stream> filterByAttractiveTypeCode(Stream<LikeablePerson> likeablePeopleStream, int attractiveTypeCode) {
         if(likeablePeopleStream == null) return RsData.of("F-1", "호감을 받지 않았습니다.");
 
         likeablePeopleStream = likeablePeopleStream.filter(e -> e.getAttractiveTypeCode() == attractiveTypeCode);

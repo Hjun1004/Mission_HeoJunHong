@@ -148,11 +148,11 @@ public class LikeablePersonController {
             Stream<LikeablePerson> likeablePeopleStream = instaMember.getToLikeablePeople().stream();
 
             if(gender != null){
-                likeablePeopleStream = likeablePersonService.genderSorted(likeablePeopleStream, gender).getData();
+                likeablePeopleStream = likeablePersonService.filterByGender(likeablePeopleStream, gender).getData();
             }
 
             if (attractiveTypeCode != 0) {
-                likeablePeopleStream = likeablePersonService.attractiveSorted(likeablePeopleStream, attractiveTypeCode).getData();
+                likeablePeopleStream = likeablePersonService.filterByAttractiveTypeCode(likeablePeopleStream, attractiveTypeCode).getData();
             }
 
             likeablePeopleStream = likeablePersonService.sortCodeSroted(likeablePeopleStream, sortCode).getData();
