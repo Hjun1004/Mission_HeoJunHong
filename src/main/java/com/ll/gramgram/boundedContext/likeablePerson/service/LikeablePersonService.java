@@ -278,8 +278,8 @@ public class LikeablePersonService {
                         .sorted(Comparator.comparingLong((LikeablePerson p) -> p.getFromInstaMember().getLikes()));
                 break;
             case 5:
-                likeablePeopleStream = likeablePeopleStream.sorted(Comparator.comparing((LikeablePerson p) -> p.getFromInstaMember().getGender())
-                        .thenComparing((LikeablePerson p) -> p.getCreateDate()).reversed());
+                likeablePeopleStream = likeablePeopleStream.sorted(Comparator.comparing((LikeablePerson p) -> p.getFromInstaMember().getGender()).reversed()
+                        .thenComparing(Comparator.comparing(LikeablePerson::getId).reversed()));
                 break;
             case 6:
                 likeablePeopleStream = likeablePeopleStream
