@@ -15,11 +15,12 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.datatransfer.Clipboard;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -236,5 +237,56 @@ public class LikeablePersonService {
             return RsData.of("F-1", explain);
         }
         return RsData.of("S-1", "변경이 가능합니다.");
+    }
+
+
+    public RsData<Stream> filterByGender(Stream<LikeablePerson> likeablePeopleStream, String gender) {
+
+        if(likeablePeopleStream == null) return RsData.of("F-1", "호감을 받지 않았습니다.");
+
+        likeablePeopleStream = likeablePeopleStream
+                .filter(e -> e.getFromInstaMember().getGender().equals(gender));
+
+        return RsData.of("S-1", "성별을 기준으로 정렬했습니다.",likeablePeopleStream);
+    }
+
+    public RsData<Stream> filterByAttractiveTypeCode(Stream<LikeablePerson> likeablePeopleStream, int attractiveTypeCode) {
+        if(likeablePeopleStream == null) return RsData.of("F-1", "호감을 받지 않았습니다.");
+
+        likeablePeopleStream = likeablePeopleStream.filter(e -> e.getAttractiveTypeCode() == attractiveTypeCode);
+
+        return RsData.of("S-1", "호감사유를 기준으로 정렬했습니다.",likeablePeopleStream);
+    }
+
+    public RsData<Stream> sortCodeSroted(Stream<LikeablePerson> likeablePeopleStream, int sortCode) {
+        if(likeablePeopleStream == null) return RsData.of("F-1", "호감을 받지 않았습니다.");
+
+        switch (sortCode) {
+            case 1:
+                likeablePeopleStream = likeablePeopleStream.sorted(Comparator.comparing(LikeablePerson::getId).reversed());
+                break;
+            case 2:
+                likeablePeopleStream = likeablePeopleStream.sorted(Comparator.comparing(LikeablePerson::getId));
+                break;
+            case 3:
+                likeablePeopleStream = likeablePeopleStream
+                        .sorted(Comparator.comparingLong((LikeablePerson p) -> p.getFromInstaMember().getLikes()).reversed());
+                // getLikes는 InstaMemberBase엔티티에 있는 나를 좋아하는 남성과 여성 숫자의 합이다.
+                break;
+            case 4:
+                likeablePeopleStream = likeablePeopleStream
+                        .sorted(Comparator.comparingLong((LikeablePerson p) -> p.getFromInstaMember().getLikes()));
+                break;
+            case 5:
+                likeablePeopleStream = likeablePeopleStream.sorted(Comparator.comparing((LikeablePerson p) -> p.getFromInstaMember().getGender())
+                        .thenComparing((LikeablePerson p) -> p.getCreateDate()).reversed());
+                break;
+            case 6:
+                likeablePeopleStream = likeablePeopleStream
+                        .sorted(Comparator.comparing(LikeablePerson::getAttractiveTypeCode).reversed().thenComparing(LikeablePerson::getCreateDate).reversed());
+                break;
+
+        }
+        return RsData.of("S-1", "정렬했습니다.",likeablePeopleStream);
     }
 }

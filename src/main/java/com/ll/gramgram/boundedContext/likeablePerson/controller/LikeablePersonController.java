@@ -16,6 +16,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 @RequestMapping("/usr/likeablePerson")
@@ -120,18 +122,48 @@ public class LikeablePersonController {
         return rq.redirectWithMsg("/usr/likeablePerson/list", rsData);
     }
 
+
+//    @PreAuthorize("isAuthenticated()")
+//    @GetMapping("/toList")
+//    public String showToList1(Model model){
+//        InstaMember instaMember = rq.getMember().getInstaMember();
+//
+//        if(instaMember != null){
+//            List<LikeablePerson> likeablePeople = instaMember.getToLikeablePeople();
+//            model.addAttribute("likeablePeople", likeablePeople);
+//        }
+//
+//        return "usr/likeablePerson/toList";
+//    }
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/toList")
-    public String showToList(Model model) {
+    public String showToList(Model model, @RequestParam(defaultValue = "") String gender, @RequestParam(defaultValue = "0") int attractiveTypeCode,  @RequestParam(defaultValue = "1") int sortCode) {
+        if(gender.trim().equals("")) gender = null;
+
         InstaMember instaMember = rq.getMember().getInstaMember();
 
         // 인스타인증을 했는지 체크
         if(instaMember != null){
-            // 해당 인스타회원을 좋아하는 사람들 목록
-            List<LikeablePerson> likeablePeople = instaMember.getToLikeablePeople();
+            Stream<LikeablePerson> likeablePeopleStream = instaMember.getToLikeablePeople().stream();
+
+            if(gender != null){
+                likeablePeopleStream = likeablePersonService.filterByGender(likeablePeopleStream, gender).getData();
+            }
+
+            if (attractiveTypeCode != 0) {
+                likeablePeopleStream = likeablePersonService.filterByAttractiveTypeCode(likeablePeopleStream, attractiveTypeCode).getData();
+            }
+
+            likeablePeopleStream = likeablePersonService.sortCodeSroted(likeablePeopleStream, sortCode).getData();
+
+            List<LikeablePerson> likeablePeople = likeablePeopleStream.collect(Collectors.toList());
+
             model.addAttribute("likeablePeople", likeablePeople);
         }
 
         return "usr/likeablePerson/toList";
     }
+
+
 }
