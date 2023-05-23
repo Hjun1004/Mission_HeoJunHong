@@ -45,11 +45,11 @@ public class NotificationServiceTests {
 
         Notification lastNotification = notifications.get(notifications.size() - 1);
 
-        assertThat(lastNotification.getFromInstaMember().getUsername()).isEqualTo("insta_user3");
+        assertThat(lastNotification.getFromInstaMember().getUsername()).isEqualTo("insta_user10");
 
         assertThat(lastNotification.getTypeCode()).isEqualTo("Like");
 
-        assertThat(lastNotification.getNewAttractiveTypeCode()).isEqualTo(1);
+        assertThat(lastNotification.getNewAttractiveTypeCode()).isEqualTo(3);
 
     }
 }
